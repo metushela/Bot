@@ -1,4 +1,3 @@
-
 import json
 import os
 from flask import Flask, request
@@ -36,6 +35,7 @@ def receive_update():
             conversations[chat_id]["message"] = text
             conversations[chat_id]["step"] = "waiting_button_count"
             bot.send_message(chat_id, "Combien de boutons veux-tu ajouter ?")
+
         elif step == "waiting_button_count":
             if not text.isdigit():
                 bot.send_message(chat_id, "Donne un nombre valide.")
@@ -45,10 +45,12 @@ def receive_update():
             conversations[chat_id]["step"] = "waiting_button_title"
             conversations[chat_id]["current_button"] = 1
             bot.send_message(chat_id, f"Titre du bouton 1 :")
+
         elif step == "waiting_button_title":
             conversations[chat_id]["buttons"].append({"text": text})
             conversations[chat_id]["step"] = "waiting_button_url"
             bot.send_message(chat_id, f"Lien du bouton {conversations[chat_id]['current_button']} :")
+
         elif step == "waiting_button_url":
             conversations[chat_id]["buttons"][-1]["url"] = text
             if conversations[chat_id]["current_button"] < conversations[chat_id]["button_count"]:
@@ -61,9 +63,9 @@ def receive_update():
                 keyboard = [[InlineKeyboardButton(b["text"], url=b["url"])] for b in buttons]
                 markup = InlineKeyboardMarkup(keyboard)
                 bot.send_message(chat_id, "Voici l'aperçu :", reply_markup=markup)
-                bot.send_message(chat_id, "Dans quel groupe ou chaîne veux-tu publier ?"
-Envoie l'@nomdugroupe ou l'ID.")
+                bot.send_message(chat_id, "Dans quel groupe ou chaîne veux-tu publier ?\nEnvoie l'@nomdugroupe ou l'ID.")
                 conversations[chat_id]["step"] = "waiting_destination"
+
         elif step == "waiting_destination":
             try:
                 msg = conversations[chat_id]["message"]
@@ -82,9 +84,7 @@ Envoie l'@nomdugroupe ou l'ID.")
             parts = text.split(" | ")
             _, question, reponse, image = parts
         except ValueError:
-            bot.send_message(chat_id, "❌ Format invalide.
-Utilise :
-/ajouter | question | réponse | image_url (facultatif)")
+            bot.send_message(chat_id, "❌ Format invalide.\nUtilise :\n/ajouter | question | réponse | image_url (facultatif)")
             return "ok"
         data = load_data()
         data["questions"].append({
@@ -137,7 +137,7 @@ def index():
 
 @app.before_first_request
 def set_webhook():
-    url = os.environ.get("RENDER_EXTERNAL_URL") or "https://TON-NOM.onrender.com"
+    url = os.environ.get("RENDER_EXTERNAL_URL") or "https://TON-SOUSDOMAINE.onrender.com"
     bot.set_webhook(f"{url}/{TOKEN}")
 
 if __name__ == "__main__":
