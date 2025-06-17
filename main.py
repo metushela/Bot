@@ -61,7 +61,7 @@ def receive_update():
                 keyboard = [[InlineKeyboardButton(b["text"], url=b["url"])] for b in buttons]
                 markup = InlineKeyboardMarkup(keyboard)
                 bot.send_message(chat_id, "Voici l'aperçu :", reply_markup=markup)
-                bot.send_message(chat_id, "Dans quel groupe ou chaîne veux-tu publier ?
+                bot.send_message(chat_id, "Dans quel groupe ou chaîne veux-tu publier ?"
 Envoie l'@nomdugroupe ou l'ID.")
                 conversations[chat_id]["step"] = "waiting_destination"
         elif step == "waiting_destination":
